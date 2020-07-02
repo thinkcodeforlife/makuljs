@@ -36,6 +36,7 @@ var dataframe = {
         "td, th { border: 1px solid #dddddd; text-align: left; padding: 8px; }",
         "tr:nth-child(even) { background-color: #dddddd; }"
     ],
+    instanceCount: 0,
     getColumns: function () {
         return this.columns;
     },
@@ -75,11 +76,13 @@ var dataframe = {
         });
     },
     createFromDicts: function (listOfDicts) {
+        this.instanceCount++;
         var new_df = Object.create(this);
         var columns = Object.keys(listOfDicts[0]);
         var rows = listOfDicts.map(dict => Object.values(dict));
         new_df.columns = columns;
         new_df.rows = rows;
+        new_df.meta = { id: "From_Dicts_" + this.instanceCount };
         new_df.setID();
         new_df.setName();
         new_df.createHTML();
@@ -87,9 +90,11 @@ var dataframe = {
         return new_df;
     },
     createFromLists: function (lists) {
+        this.instanceCount++;
         var new_df = Object.create(this);
         new_df.columns = lists[0];
         new_df.rows = lists.slice(1, lists.length);
+        new_df.meta = { id: "From_Lists_" + this.instanceCount };
         new_df.setID();
         new_df.setName();
         new_df.createHTML();
@@ -97,6 +102,7 @@ var dataframe = {
         return new_df;
     },
     create: function (options) {
+        this.instanceCount++;
         var new_df = Object.create(this);
         new_df.columns = options["columns"];
         new_df.rows = options["rows"];
@@ -136,15 +142,18 @@ var dataframe = {
         return null;
     },
     delete: function (row_id) {
-        var row = this.rows.filter(row => row.id == row_id)[0];
-        this.rows.pop(row);
+        // var row = this.rows.filter(row => row.id == row_id)[0];
+        // this.rows.pop(row);
+        this.rows.splice(row_id, 1);
         console.log("row deleted:", row);
         
     },
     edit: function (row_id, new_row) {
-        var row = this.rows.filter(row => row.id == row_id)[0];
-        var idx = this.rows.indexOf(row);
-        this.rows[idx] = new_row;
+        this.rows[row_id] = new_row
+    },
+    find: function (column, value) {
+        var idx = this.columns.indexOf(column);
+        return this.rows.filter(row => row[idx] == value);
     },
     drop: function () {
         this.columns = [];
@@ -365,8 +374,6 @@ var makul = {
         var elem = document.getElementById(id);
         var styleOptions = elem.style.cssText;
         var defaultOptions = this.getOptions(elem.tagName);
-        // console.log("tag of elem:", elem.tagName);
-        // console.log("defaultOptions:", defaultOptions);
         var highlightable = defaultOptions["highlightable"];
         var selectable = defaultOptions["selectable"];
         if (highlightable && selectable) {
@@ -416,7 +423,6 @@ var makul = {
             var elCard = document.getElementById(new_id);
             elCard.style.display = 'block';
         }
-        // console.log("elCard.style.display", elCard.style.display);
         var fadeInBottomValue = parseInt(this.notificationOptions.style.top);
         var fadeInTopValue = fadeInBottomValue - parseInt(this.notificationOptions.style.height);
         this.fadeIn(elCard, fadeInBottomValue, fadeInTopValue);
@@ -447,10 +453,10 @@ var makul = {
         }
         return el;
     },
-    createView: function (options) {
-        var view = document.createElement("div");
-        return view;
-    },
+    // createView: function (options) {
+    //     var view = document.createElement("div");
+    //     return view;
+    // },
     create: function(componentType, options) {
         var divs = document.getElementsByTagName("div");
         var l = divs.length;
@@ -458,8 +464,6 @@ var makul = {
             if (options["id"] == divs[i].id)
                 return
         }
-        // var highlightable = false;
-        // var selectable = false;
         var id = options["id"];
         switch(componentType) {
             case "card":
@@ -481,14 +485,6 @@ var makul = {
                     var parent_id = options["parent_id"] || 0;
                     this.appendElement(elCard, parent_id);
                 }
-                // highlightable = this.cardOptions["highlightable"];
-                // if (typeof options["highlightable"] !== "undefined") {
-                //     highlightable = options["highlightable"];
-                // }
-                // selectable = this.cardOptions["selectable"];
-                // if (typeof options["selectable"] !== "undefined") {
-                //     selectable = options["selectable"];
-                // }
                 break;
             case "view":
                 var elements = options["elements"];
@@ -502,14 +498,6 @@ var makul = {
                 p.id = id;
                 p.innerText = options["data"];
                 p.style.fontFamily = this.paragraphOptions["style"].fontFamily;
-                // highlightable = this.paragraphOptions["highlightable"];
-                // if (typeof options["highlightable"] !== "undefined") {
-                //     highlightable = options["highlightable"];
-                // }
-                // selectable = this.paragraphOptions["selectable"];
-                // if (typeof options["selectable"] !== "undefined") {
-                //     selectable = options["selectable"];
-                // }
                 var parent_id = options["parent_id"] || 0;
                 this.appendElement(p, parent_id);
                 break;
@@ -527,14 +515,6 @@ var makul = {
                 var elCon = this.createContainer(options["style"]);
                 elCon.id = id;
                 document.body.appendChild(elCon);
-                // highlightable = this.containerOptions["highlightable"];
-                // if (typeof options["highlightable"] !== "undefined") {
-                //     highlightable = options["highlightable"];
-                // }
-                // selectable = this.containerOptions["selectable"];
-                // if (typeof options["selectable"] !== "undefined") {
-                //     selectable = options["selectable"];
-                // }
                 break;
             case "route":
                 var view = options["view"];
@@ -548,14 +528,6 @@ var makul = {
                 a.innerText = options["data"];
                 a.href = options["url"];
                 a.style.fontFamily = this.linkOptions["style"].fontFamily;
-                // highlightable = this.linkOptions["highlightable"];
-                // if (typeof options["highlightable"] !== "undefined") {
-                //     highlightable = options["highlightable"];
-                // }
-                // selectable = this.linkOptions["selectable"];
-                // if (typeof options["selectable"] !== "undefined") {
-                //     selectable = options["selectable"];
-                // }
                 // a.target = "_blank";
                 if (typeof options["route_id"] !== "undefined") {
                     var route_id = options["route_id"];
@@ -575,21 +547,9 @@ var makul = {
             case "button":
                 break;
         }
-        // console.log("componentType", componentType);
-        // console.log("highlightable", highlightable);
-        // console.log("selectable", selectable);
-        // if (highlightable && selectable) {
-        //     this.subscribeAllEvents();
-        // } else if (highlightable) {
-        //     this.subscribeHighlightEvents(id);
-        // } else if (selectable) {
-        //     this.subscribeSelectEvents(id);
-        // }
         this.subscribeAllEvents();
     },
     display: function(component, options) {
-        var highlightable = false;
-        var selectable = false;
         var componentList = this.componentList;
         var c = componentList[component];
         if (typeof c !== "undefined" && !c["displayed"]){
@@ -642,17 +602,7 @@ var makul = {
         if (typeof c["selectable"] !== "undefined") {
             selectable = c["selectable"];
         }
-        console.log("display::tag", c["tag"] ? c["tag"] : "no tag specified");
-        console.log("display::componentType", c["type"] ? c["type"] : "no type specified");
-        console.log("display::highlightable", highlightable);
-        console.log("display::selectable", selectable);
-        if (highlightable && selectable) {
-            this.subscribeAllEvents();
-        } else if (highlightable) {
-            this.subscribeHighlightEvents(id);
-        } else if (selectable) {
-            this.subscribeSelectEvents(id);
-        }
+        this.subscribeAllEvents();
     }
 }
 

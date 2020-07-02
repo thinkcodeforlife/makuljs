@@ -26,12 +26,15 @@ var df_3 = dataframe.createFromLists([["header1", "header2", "header3"], [1,2,3]
 var df_4 = dataframe.createFromLists([["header1", "header2", "header3"], [3,4,5], ["d", "e", "f"]]);
 
 df_1.add([3 , 4, 5]);
+df_2.add(["x" , "b", 9]);
 
 var df_5 = df_3.merge(df_4);
 
 df_1.print();
 // df_2.print();
 // df_3.print();
+
+console.log("df_2 find h2 b", df_2.find("h2", "b"));
 // ----------------------------------------
 
 var myLi = ["list element 1", 2, "dur bea"];
