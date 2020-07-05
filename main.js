@@ -12,6 +12,10 @@ myModule.componentList = comps;
 // myModule.display("comp1");
 // console.log(myModule);
 
+myModule.setContext({
+    title: "My App"
+});
+
 var df_1 = dataframe.create({
     columns: ["b1", "b2", "b3"],
     rows: [[1 , 2, 3], ["yeah", "hayt", "dur"]],
@@ -34,7 +38,7 @@ df_1.print();
 // df_2.print();
 // df_3.print();
 
-console.log("df_2 find h2 b", df_2.find("h2", "b"));
+// console.log("df_2 find h2 b", df_2.find("h2", "b"));
 // ----------------------------------------
 
 var myLi = ["list element 1", 2, "dur bea"];
@@ -65,16 +69,18 @@ myModule.create("card", {
 
 
 // ----------------------------------------
+myModule.display("comp3");
 
 myModule.create("view", {
     id: "view_1",
-    elements: ["container_1", "deneme"]
+    elements: ["container_1", "mydiv"]
 });
 
 myModule.create("route", {
-    id: "route_1",
+    id: "homeRoute",
     view: "view_1",
-    route: "/home"
+    route: "Home",
+    default: true
 });
 
 // ----------------------------------------
@@ -82,7 +88,7 @@ myModule.create("route", {
 myModule.create("table", {
     id: "t1",
     data: df_5.getHTML(),
-    "parent_id": "container_1",
+    parent_id: "container_1",
 });
 
 myModule.create("paragraph", {
@@ -92,34 +98,50 @@ myModule.create("paragraph", {
 
 myModule.create("view", {
     id: "view_2",
-    elements: ["about"]
+    elements: ["about", "container_2"]
 });
 
 myModule.create("route", {
-    id: "route_2",
+    id: "aboutRoute",
     view: "view_2",
-    route: "/about"
+    route: "About"
 });
 
-myModule.create("link", {
-    id: "link_1",
-    data: "tıkla kazan",
-    route_id: "route_2",
-    url: "#"
-});
+// myModule.create("link", {
+//     id: "link_1",
+//     data: "about",
+//     url: "#",
+//     function: {
+//         name: "displayRoute",
+//         parameters: "aboutRoute",
+//         eventType: "click"
+//     },
+// });
 
-myModule.create("link", {
-    id: "link_2",
-    data: "tıkla bea",
-    route_id: "route_1",
-    url: "#"
-});
+// myModule.create("link", {
+//     id: "link_2",
+//     data: "Go home",
+//     url: "#",
+//     function: {
+//         name: "displayRoute",
+//         parameters: "homeRoute",
+//         eventType: "click"
+//     },
+// });
 
 
 
 // ----------------------------------------
 
-var el = document.getElementById("deneme");
+myModule.create("container", {
+    id: "container_2",
+    "style": {
+        "backgroundColor": "HoneyDew",
+    }
+});
+
+
+var el = document.getElementById("container_2");
 
 el.onclick = function (e) {
     console.log(e);
@@ -154,3 +176,4 @@ el.addEventListener("click", function(){
         },
     });
 })
+

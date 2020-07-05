@@ -6,20 +6,37 @@ var comp1 = {
     "style": {
         "color": "blue",
     },
-    "parent_id": "deneme",
+    "parent_id": "container_2",
 };
 
 var comp2 = {
     "name": "comp2",
     "tag": "p",
-    "id": "myspan",
+    "id": "myspan2",
     "data": "component delete now!",
     "style": {
         "color": "lightcoral",
         "width": "40%",
-        "textShadow": "1px 1px 1px yellow"
+        "textShadow": "1px 1px 1px yellow",
     },
-    "submodule": "x"
+};
+
+var comp3 = {
+    "name": "comp3",
+    "tag": "div",
+    "id": "mydiv",
+    "data": "hadi burdan yak!",
+    "style": {
+        "color": "lightcoral",
+        "width": "40%",
+        "textShadow": "1px 1px 1px yellow",
+        "border": "1px solid green"
+    },
+    "submodule": {
+        name: "x",
+        verticalPosition: 2,
+        horizontalPosition: 3
+    }
 };
 
 var card1 = {
@@ -60,7 +77,7 @@ var myList = {
         "color": "cyan",
         "backgroundColor": "pink"
     },
-    "parent_id": "deneme",
+    "parent_id": "container_2",
 };
 
 var myList2 = {
@@ -81,5 +98,6 @@ export default {
     liObj2,
     card1,
     comp2,
-    myList2
+    myList2,
+    comp3
 };
