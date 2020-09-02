@@ -1123,7 +1123,6 @@ var makul = {
                     break;
             }
         }
-        // this.appendAll();
         this.subscribeAllEvents();
     }
 }
